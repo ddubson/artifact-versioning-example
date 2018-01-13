@@ -22,11 +22,25 @@ apply plugin: 'kotlin-spring'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'maven-publish'
 
+group = "com.ddubson.versioning"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
     compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
+}
+
+project.ext.ghToken = project.hasProperty('ghToken') ? project.getProperty('ghToken') : System.getenv('GH_TOKEN') ?: null
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+semanticRelease {
+    repositories {
+        ghToken = project.ghToken
+    }
 }
 
 compileKotlin { kotlinOptions { jvmTarget = "1.8" }}
