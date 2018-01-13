@@ -11,6 +11,7 @@ class Application: ApplicationRunner {
         println("Hello World!")
         println("Another thing!")
         println("Woah!")
+        println("Gahh!")
     }
 }
 
