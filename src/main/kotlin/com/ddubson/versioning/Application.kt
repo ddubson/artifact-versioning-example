@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 class Application: ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
         println("Hello World!")
+        println("Another thing.")
     }
 }
 
