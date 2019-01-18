@@ -34,3 +34,12 @@ Add the `GH_TOKEN` variable to your TravisCI pipeline.
 On every push to the `master` branch, a release will take place. 
 
 Refer to `.travis.yml` file on how to create a TravisCI pipeline configuration.
+
+## Example Workflow using TravisCI
+
+1. On `develop`, add commits as per development flow. Semantic Release will not release on `develop`
+2. Each commit should follow the convention outlined [here]((https://github.com/conventional-changelog-archived-repos/conventional-changelog-angular/blob/master/convention.md))
+3. When ready to create a release, switch to `master` and merge all commits from `develop` and push!
+4. On `master`, TravisCI will build the branch and trigger `release` which will cut SNAPSHOT into a release version.
+5. `release` will also create a release artifact in `Releases`
+6. `release` will also create a tag with the released version.
