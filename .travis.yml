@@ -4,6 +4,8 @@ addons:
     packages:
     - git
 language: java
+services:
+  - docker
 jdk: oraclejdk8
 env: TERM=dumb
 branches:
@@ -16,5 +18,23 @@ before_install:
   - git checkout -qf $TRAVIS_BRANCH
 install:
   - echo "skip default gradlew assemble"
-script:
-  - ./gradlew release -Dorg.ajoberstar.grgit.auth.username=${GH_TOKEN} -Dorg.ajoberstar.grgit.auth.password
+jobs:
+  include:
+    - stage: test
+      script:
+        - ./gradlew test
+    - stage: create-github-release
+      script:
+        - ./gradlew release -Dorg.ajoberstar.grgit.auth.username=${GH_TOKEN} -Dorg.ajoberstar.grgit.auth.password
+    - stage: create-and-publish-docker-image
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - ./gradlew docker dockerPush
+      env:
+        - secure: W+ljzPe7UwDd3ZyjRhkMxO9XMxOTPX74GcfCd9xKlOGmrhRcj5JnuCZh8HsWyN5C+CsOJd8YiiChs1wpCVPxLzZuKfwdqzm5qawBIzzuIrd1NQtSN+crMDq7uD2iPsMTtYZxkmI3khnc9SBGnOU80VFC7OCwcaddaVgAP84sTr+qsfn/L8gEOt//scRCNcEPhLcNAIXx+AEVvP3PzV5R93wY50IJU55DRouFMwgmMKs3FF4oqbmZ4tFmAfDO7lrB/R7+F4R/xTzXQ3qa2vVwz073orY8SApyfvBBxR1E+ZTRXHlyaVuBC/L5v5Hy4H179GlCpXNV7KJ6PtgT+9MfU+LtUPGE3dohrjn2L6yFESd2H0tukJ2vxl6XQ0IxwVOJHM5GSDxd8WDkshLlcaPLzqGDEJr1+9ZBmImffiTqEYuPVRCe0NloVRc9A2G8v5CA9cC24TMuCGc2kMNkSmpbGrXxVdbJA6uAK74wCUQRWdWepR8ndNWOWP1bJvhI197xy/PP1/Dbwn0UcOkyTMpGhCHOtqjLNSLS1/q3ePI1PmBPimzmYH0BDrBh5or7FT9v9AVATqIZyw+DaJsV9zGdS6ZIM2tNFvhuyxSmCPhAA3QDy8JNK0j+Z3gSoSUCfl7FLop7qJj54WpREMHXVKbWXmxFWlsl8VY735UdoM5ChWc=
+        - secure: 1Kd7hd1ZuFNVuHvX+lI6aEtCtukzTQXiO8WGq08Hvj1TafgPgZMpj/zydY90GAdYWfcDGOytxsyxYEBgDB6mkIROhmDXWhzsv4be3RmlQ4WKQhtU1pPCZ7grt8dWKo6Uxa+yKSZXfnvOFLeL6aEQCT9PaY384pKPg9oTeiEdYvt71SrzABLUPlFUQF0Itw9PRqeanGDAvEZD0SxdodRshjux+fKmi3mi23fbnZqXldcS4Oe2oIJ+cUI5CFyGn0xEu13PPYGIDJoJspB8AmfubjaIHuiaBP5a2gHuZ8ZnGLNa3miU1m1mF6z8PAQhiigbcvZXCm44zGkpAOEG80+a8gYVvezdgFQ8e4fdPluo9vjFusm1FQdYgcuOFDD3E9d8ayM13wjRTR1w+bayKyTnEC1YsQMK2UraVBu11a34ovhg/2/uL8xk7Amr/RM1J3ZkBjGzXOaqitT0jaD8G9XJ9jsfJoDc4Jj1GojtaunyG+w1d39uhNaX5acjDd6UmrHnaoeTmCWQeDmSzfWcjRQDAeWOVSoQDl1DqoTDnl3C5AXhooVvBrfHp8oPxiU/5e6Giw5vaJ1f5lwwMZ+GtEtwvMoUXWqwOYZkPXSS0Z2iIyZAlveQRiqvxzLQpF77XCHyJaOs4ErEB4pdkCNB7gnj1/ttjwP//x99SYWz14sysOI=
+stages:
+  - name: test
+  - name: create-github-release
+  - name: create-and-publish-docker-image
+    if: (branch = develop) OR (branch = master)
