@@ -2,8 +2,8 @@ package com.ddubson.versioning
 
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
 @SpringBootApplication
 class Application: ApplicationRunner {
@@ -16,5 +16,5 @@ class Application: ApplicationRunner {
 }
 
 fun main(args: Array<String>) {
-    SpringApplication.run(Application::class.java, *args)
+    runApplication<Application>(*args)
 }
