@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ddubson/artifact-versioning-example.svg?branch=master)](https://travis-ci.org/ddubson/artifact-versioning-example)
+
 # Artifact Versioning and Publishing Example
 
 ## Structured Git versioning using Semantic Versioning
